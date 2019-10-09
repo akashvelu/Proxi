@@ -1,0 +1,52 @@
+var mysql = require('mysql');
+var config = require('./config.json');
+var pool = mysql.createPool ({
+    host      :       config.dbhost,
+    user      :       "akashvelu",
+    password  :       "harshisgay",
+    database  :       "bike_db_schema"
+
+})
+
+function insertField (queryString, connection, callback) {
+    // console.log("INSERT START");
+    connection.query(queryString, function (err, results, fields) {
+        // console.log("in insert")
+        if (err) {
+            // console.log("insert error");
+            callback(err, null);
+        } else {
+            // console.log("blah");
+            callback(null, "Successful entry");
+        }
+    })
+}
+
+function insertData(callback, connections, fields) {
+    var lat = fields.lat; 
+    var long = fields.long; 
+    var dangerRating = fields.dangerRating; 
+    
+    var queryString = "INSERT INTO bike_db_schema.DangerData (lat, long, dangerRating) VALUES (" +  lat + ", " + lon + ", " + dangerRating + ")";
+
+
+}
+exports.handler = (event, context, callback) => {
+    context.callbackWaitsForEmptyEventLoop = false; 
+    pool.getConnection(function(err, connection) {
+        if (err) callback(err); 
+        var action = event.action; 
+        var fields = event.fields; 
+
+        var name = fields.name;
+        var address = fields.address; 
+        var city = fields.city; 
+        var state = fields.state; 
+        var zip = fields.zip; 
+        insertRestaurant(callback, connection, name, address, city, state, zip);
+        callback(null, "success");
+    });
+}
+
+
+
